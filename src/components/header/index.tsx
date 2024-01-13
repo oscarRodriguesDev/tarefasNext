@@ -13,16 +13,24 @@ const Header = () => {
               Tarefas <span>+</span>
             </h1>
           </Link>
-          <Link href="/dashboards" className={styles.link}>
+         {/*  <Link href="/dashboards" className={styles.link}>
             Meu Painel
-          </Link>
+          </Link> */}
+        {session?.user &&(
+          <Link href="/dashboards" className={styles.link}>
+          Meu Painel
+        </Link> 
+        )
+        
+        }
+
         </nav>
         {/*  <button className={styles.loginButton}>Acessar</button> */}
         {status === "loading" ? (
           <></>
         ) : session ? (
 
-          <button className={styles.loginButton} onClick={()=>{signOut()}}>Ola {session?.user?.name}</button>
+          <button className={styles.loginButton} onClick={()=>{signOut()}}>Ola {session?.user?.name} sair?</button>
         ):(
             <button className={styles.loginButton} onClick={()=>{signIn()}}>Acessar</button> 
         )

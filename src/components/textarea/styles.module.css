@@ -1,0 +1,8 @@
+.textarea{
+   width: 100%; 
+   resize: none;
+   height:164px;
+   border-radius: 5px;
+   outline: none;
+   padding:8px;
+}
