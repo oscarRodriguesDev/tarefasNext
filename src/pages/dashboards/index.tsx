@@ -5,7 +5,47 @@ import { getSession } from "next-auth/react";
 import Textarea from "../../components/textarea";
 import {FiShare2} from 'react-icons/fi'
 import {FaTrash} from 'react-icons/fa'
-const Dashboards = () => {
+import {ChangeEvent, FormEvent, useState} from 'react'
+import{db} from '../../services/firebaseConnection' 
+import {addDoc, collection} from 'firebase/firestore'
+
+interface HomeProps{
+  user:{
+    email:string
+  }
+}
+const Dashboards = ({user}:HomeProps) => {
+
+const [input, setInput] =  useState('')
+const [publicTask, setPublicTask] =  useState(false)
+
+//função para capturar se o usuario colocou a tarefa como publica ou não
+function handleChangePublic(event:ChangeEvent<HTMLInputElement>){
+  console.log(event.target.checked)
+ setPublicTask(event.target.checked)
+}
+
+//função para registrar as tarefas
+async function handleRegisterTask(event:FormEvent<HTMLFormElement>){
+  event.preventDefault()
+
+  if(input==='') return
+ try{
+  await addDoc(collection(db,'tarefas'),{
+    tarefa:input,
+    created:new Date(),
+    user:user?.email,
+    public:publicTask
+  }
+  )
+  setInput('')
+
+ }catch(erro){
+  console.log(erro)
+ }
+}
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,15 +56,31 @@ const Dashboards = () => {
         <section className={styles.content}>
           <div className={styles.contentForm}>
             <h1 className={styles.title}>Qual sua Tarefa</h1>
-            <Textarea placeholder="Digite sua Tarefa..." />
+           
+           {/* formulario para gravar tarefas */}
+           <form onSubmit={handleRegisterTask}>
+           <Textarea placeholder="Digite sua Tarefa..."
+            value={input}
+            onChange={(event:ChangeEvent<HTMLTextAreaElement>)=> setInput(event.target.value)}
+             />
             <div className={styles.checkBoxArea}>
-              <input type="checkbox" className={styles.checkbox} />
+
+
+              <input type="checkbox" className={styles.checkbox}
+              checked={publicTask}
+              onChange={handleChangePublic}
+              
+              />
               <label>Deixar tarefa publica</label>
             </div>
             <button className={styles.button} type="submit">
               Registrar
             </button>
+            
+           </form>
+           
           </div>
+      
         </section>
 
         
@@ -78,6 +134,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   return {
-    props: {},
+    props: {
+      user:{
+        email: session.user.email,
+      }
+    },
   };
 };
