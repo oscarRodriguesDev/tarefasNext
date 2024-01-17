@@ -1,70 +1,122 @@
-import { GetServerSideProps } from "next"
-import Head from "next/head"
-import styles from './styles.module.css'
-import {db} from '../../services/firebaseConnection'
+import { ChangeEvent, FormEvent, useState } from "react";
+import { useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
+import Textarea from "@/components/textarea";
+import styles from "./styles.module.css";
+import { db } from "../../services/firebaseConnection";
 import {
-    doc,
-    collection,
-    query,
-    where,
-    getDoc,
+  doc,
+  collection,
+  query,
+  where,
+  getDoc,
+  addDoc,
+} from "firebase/firestore";
 
-}from 'firebase/firestore'
-import { spawn } from "child_process"
+interface TaskProps {
+  item: {
+    tarefa: string;
+    public: boolean;
+    created: string;
+    user: string;
+    taskId: string;
+  };
+}
 
+const Task = ({ item }: TaskProps) => {
+  const { data: session } = useSession();
+  const [input, setInput] = useState("");
 
+  async function handleComment(event: FormEvent) {
+    event.preventDefault();
+    if (input === "") return;
 
-const Task =()=>{
-    return(
-      <div className={styles.container}>
-        <Head>
-            <title>Detalhes da Tarefa</title>
-        </Head>
+    if (!session?.user?.email || !session?.user?.name) return
+      try {
+        const docRef = await addDoc(collection(db, "comments"), {
+          comment: input,
+          created: new Date(),
+          user: session?.user?.email,
+          name: session?.user?.name,
+          taskId: item?.taskId,
+        });
+        alert("salvo");
+        setInput("");
+      } catch (error) {
+        console.log(error);
+      }
+    
+  
+  }
 
-        <main className={styles.main}>
+  return (
+    <div className={styles.container}>
+      <Head>
+        <title>Detalhes da Tarefa</title>
+      </Head>
+
+      <main className={styles.main}>
         <h1>Tarefa</h1>
-        </main>
-      </div> 
-    )    
-}
+        <article className={styles.task}>
+          <p>{item.tarefa}</p>
+        </article>
+      </main>
+      <section className={styles.commentsContainer}>
+        <h2>Deixar comentario</h2>
+        <form onSubmit={handleComment}>
+          <Textarea
+            placeholder="Digite seu comentário..."
+            value={input}
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+              setInput(event.target.value)
+            }
+          ></Textarea>
+          <button className={styles.button} disabled={!session?.user}>
+            Enviar Comentário
+          </button>
+        </form>
+      </section>
+    </div>
+  );
+};
 
-export const getServerSideProps:GetServerSideProps = async({params})=>{
-    const id = params?.id as string
-   const docRef = doc(db,'tarefas',id)
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const id = params?.id as string;
+  const docRef = doc(db, "tarefas", id);
 
-   const snapshot = await getDoc(docRef)
-   if(snapshot.data===undefined){
-    return{
-        redirect:{
-            destination:'/',
-            permanent:false,
-        }
-    }
-   }
+  const snapshot = await getDoc(docRef);
+  if (snapshot.data === undefined) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
-   if(!snapshot.data()?.public){
-    return{
-        redirect:{
-            destination:'/',
-            permanent:false,
-        }
-    }
-   }
-   const miliseconds =  snapshot.data()?.created.seconds *1000
-   const task = {
-    tarefa:snapshot.data()?.tarefa,
-    public:snapshot.data()?.public,
-    created:new Date(miliseconds).toLocaleDateString(),
-    user:snapshot.data()?.user,
-   taskId:id,
-   }
+  if (!snapshot.data()?.public) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  const miliseconds = snapshot.data()?.created.seconds * 1000;
+  const task = {
+    tarefa: snapshot.data()?.tarefa,
+    public: snapshot.data()?.public,
+    created: new Date(miliseconds).toLocaleDateString(),
+    user: snapshot.data()?.user,
+    taskId: id,
+  };
 
-   console.log(task)
-    return{
-        props:{
+  return {
+    props: {
+      item: task,
+    },
+  };
+};
 
-        }
-    }
-}
-
-export default Task
+export default Task;
