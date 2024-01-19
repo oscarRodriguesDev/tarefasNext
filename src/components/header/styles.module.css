@@ -1,3 +1,4 @@
+/* Estilo para o cabeçalho da aplicação com largura total, altura fixa, e conteúdo centralizado. */
 .header {
   width: 100%;
   height: 76px;
@@ -7,6 +8,7 @@
   background-color: #0f0f0f;
 }
 
+/* Estilo para o conteúdo dentro do cabeçalho com padding, largura total, e largura máxima de 1024px. */
 .content {
   padding: 0 18px;
   width: 100%;
@@ -16,52 +18,55 @@
   justify-content: space-between;
 }
 
-.content a{
-    text-decoration: none;
-    /* margin-left: 5px; */
+/* Estilo para links dentro do conteúdo, removendo decoração de texto. */
+.content a {
+  text-decoration: none;
+  /* margin-left: 5px; */
 }
 
+/* Estilo para o logotipo com cor branca e tamanho de fonte de 32px. */
 .logo {
-    color: #fff;
-    font-size: 32px;
-  }
-  
-  .logo span {
-    color:#ea3140;
-    padding-left: 2px;
+  color: #fff;
+  font-size: 32px;
+}
 
-  }
+/* Estilo para a parte colorida do logotipo, com cor específica e espaçamento à esquerda. */
+.logo span {
+  color: #ea3140;
+  padding-left: 2px;
+}
 
-  .loginButton{
-    background:transparent;
-    padding:8px 32px;
-    border-radius: 24px;
-    color:#fff;
-    border:1.5px solid #fff;
-    cursor:pointer;
-    transition: all 0.9s;
-  }
+/* Estilo para o botão de login com fundo transparente, borda branca, e transição suave. */
+.loginButton {
+  background: transparent;
+  padding: 8px 32px;
+  border-radius: 24px;
+  color: #fff;
+  border: 1.5px solid #fff;
+  cursor: pointer;
+  transition: all 0.9s;
+}
 
-  .loginButton:hover{
-    transform: scale(1.08);
-    background-color: #fff;
-    color:#000;
-    font-weight: bold;
-  }
+/* Estilo para o botão de login ao passar o mouse sobre ele, aumentando o tamanho e mudando as cores. */
+.loginButton:hover {
+  transform: scale(1.08);
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+}
+
+/* Estilo para a navegação, com cor branca e elementos alinhados verticalmente. */
 .nav {
   color: #fff;
-  display:flex;
+  display: flex;
   align-items: center;
-  
 }
 
-.link{
-  color:#0f0f0f;
+/* Estilo para links de navegação com cor de fundo e espaçamento. */
+.link {
+  color: #0f0f0f;
   background-color: #f1f1f1;
-  padding:4px 14px;
+  padding: 4px 14px;
   margin: 0 14px;
-  border-radius:4px;
+  border-radius: 4px;
 }
-
-
-
