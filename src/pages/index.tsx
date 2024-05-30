@@ -15,7 +15,7 @@ import { Inter } from 'next/font/google';
 
 // Importa os estilos CSS do módulo 'home.module.css'
 //alteraççao do nome do arquivo de estilos
-import styles from '@/styles/home.module.css';
+import styles from '../styles/Home.module.css';
 
 // Importa o componente de imagem do Next.js
 import Image from 'next/image';
